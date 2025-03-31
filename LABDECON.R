@@ -24,3 +24,13 @@ options(scipen = 999)
 basepib<- WDI(country = 'all', indicator = 'NY.GDP.MKTP.CD')
 
 basepib2023<- WDI(country = 'all', indicator = 'NY.GDP.MKTP.CD', start = 2023, end = 2023)
+
+# DADOS EM PAINEL
+
+dadospibbr <- WDI (country = 'all',indicator = 'NY.GDP.MKTP.CD')
+
+# CORTE TRANSVERSAL
+dadospib2023 <- WDI(country = 'all', indicator = 'NY.GDP.MKTP.CD', start = 2023, end = 2023)
+
+# SÉRIE TEMPORAL
+dadospibbr <- WDI (country = 'BR', indicator = 'NY.GDP.MKTP.CD')
