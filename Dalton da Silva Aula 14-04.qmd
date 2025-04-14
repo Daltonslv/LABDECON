@@ -1,0 +1,53 @@
+---
+title: "Dalton Da Silva"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages # nomes únicos
+#| include: false # não inclui o resultado no doc
+
+library(tidyverse) # pacote ggplot2 (gráficos)
+library(WDI) # pacote de dados
+
+# BASE DE DADOS #
+# DADOS EM PAINEL
+Renda_nacional_liquida_ajustada <- WDI(country = 'all', 
+                                       indicator = 'NY.ADJ.NNTY.KD.ZG')
+# CORTE TRANSVERSAL
+Renda_nacional_liquida_ajustada <- Renda_nacional_liquida_ajustada %>%
+  mutate(country_type = ifelse(country == "Brazil", "Brazil", "Other"))
+
+# SERIE TEMPORAL
+grafpainel <- ggplot(data = Renda_nacional_liquida_ajustada, 
+                     mapping = aes(x = year, y = NY.ADJ.NNTY.KD.ZG))
+
+
+```
+
+## Variavél
+
+Falar sobre sua variável
+
+## Gráfico com Dados em Painel
+
+Falar sobre o gráfico em dados em painel
+
+```{r}
+#| label: plot-penguins
+#| warning: false
+#| echo: false
+
+ggplot(penguins, 
+       aes(x = flipper_length_mm, y = bill_length_mm)) +
+  geom_point(aes(color = species, shape = species)) +
+  scale_color_manual(values = c("darkorange","purple","cyan4")) +
+  labs(
+    title = "Flipper and bill length",
+    subtitle = "Dimensions for penguins at Palmer Station LTER",
+    x = "Flipper length (mm)", y = "Bill length (mm)",
+    color = "Penguin species", shape = "Penguin species"
+  ) +
+  theme_minimal()
+```
