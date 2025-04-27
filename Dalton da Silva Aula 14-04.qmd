@@ -13,15 +13,13 @@ library(WDI) # pacote de dados
 
 # BASE DE DADOS #
 # DADOS EM PAINEL
-Renda_nacional_liquida_ajustada <- WDI(country = 'all', 
-                                       indicator = 'NY.ADJ.NNTY.KD.ZG')
-# CORTE TRANSVERSAL
-Renda_nacional_liquida_ajustada <- Renda_nacional_liquida_ajustada %>%
-  mutate(country_type = ifelse(country == "Brazil", "Brazil", "Other"))
+dadosfertilidade_painel <- WDI(country = 'all', indicator = 'SP.ADO.TFRT')
 
+# CORTE TRANSVERSAL
+dadosfertilidade_2023 <- WDI(country = 'all', indicator = 'SP.ADO.TFRT', start = 2023, end = 2023)
 # SERIE TEMPORAL
-grafpainel <- ggplot(data = Renda_nacional_liquida_ajustada, 
-                     mapping = aes(x = year, y = NY.ADJ.NNTY.KD.ZG))
+dadosfertilidade_cn <- WDI(country = 'CN', indicator = 'SP.ADO.TFRT')
+
 
 
 ```
