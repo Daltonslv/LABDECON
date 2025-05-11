@@ -1,0 +1,117 @@
+---
+title: "Dalton"
+format: html
+editor: visual
+---
+
+```{r}
+#| label: load-packages
+#| include: false
+
+library(tidyverse)
+library(WDI)
+
+# DEFINIR OS PAÍSES
+paises_amsul <- c("AR", "BO", "BR", "CL", "CO", "EC", 
+                  "GY", "PY", "PE", "SR", "UY", "VE")
+
+# BASES DE DADOS
+dadosfert_amsul <- WDI(country = paises_amsul,
+                       indicator = "SP.ADO.TFRT",
+                       start = 2000, end = 2023,
+                       extra = TRUE)
+
+dadosfert_2023 <- WDI(country = paises_amsul,
+                      indicator = "SP.ADO.TFRT",
+                      start = 2023, end = 2023,
+                      extra = TRUE)
+
+dadosfert_br <- WDI(country = 'BR',
+                    indicator = 'SP.ADO.TFRT',
+                    start = 2000, end = 2023)
+
+```
+
+## VARIÁVEL
+
+Taxa de fertilidade adolescente (nascimentos por 1.000 mulheres de 15 a 19 anos)
+
+## GRÁFICO COM DADOS EM PAINEL
+
+Selecionei todos os paises da América do Sul para uma comparação.
+
+```{r}
+#| label: dadosempainel
+#| warning: false
+#| echo: false
+
+ggplot(dadosfert_amsul, aes(x = year, y = SP.ADO.TFRT, fill = country)) +
+  geom_col() +
+  facet_wrap(~ country, scales = "free_y") +
+  labs(
+    title = "Taxa de Fertilidade na América do Sul (2000–2023)",
+    x = "Ano",
+    y = "Filhos por mulher"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.position = "none"
+  )
+```
+
+## GRÁFICO COM CORTE TRANSVERSAL
+
+Aqui Selecionei a Taxa de Fertilidade na América do Sul Somente no Ano de 2023.
+
+```{r, fig.width=10, fig.height=8}
+#| label: dadoscortetransversal
+#| warning: false 
+#| echo: false  
+
+ggplot(dadosfert_2023, aes(x = country, y = SP.ADO.TFRT, fill = country)) +
+  geom_col() +
+  labs(
+    title = "Taxa de Fertilidade na América do Sul (2023)",
+    x = "País",
+    y = "Filhos por mulher"
+  ) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    legend.position = "none"
+  )
+```
+
+## GRÁFICO COM SÉRIE TEMPORAL
+
+Aqui está a Evolução da Taxa de Fertilidade no Brasil dos anos 2000 até o ano de 2023
+
+```{r}
+#| label: dadosserietemporal
+#| warning: false 
+#| echo: false
+
+ggplot(dadosfert_br, aes(x = factor(year), y = SP.ADO.TFRT, fill = year)) +
+  geom_col(show.legend = FALSE) +  # Barra com preenchimento
+  scale_fill_viridis_c() +  # Usando a paleta viridis para cores vibrantes
+  geom_text(aes(label = round(SP.ADO.TFRT, 2)), vjust = -0.5, size = 4) +  # Adicionando os números acima das barras
+  labs(
+    title = "Evolução da Taxa de Fertilidade no Brasil (2000–2023)",
+    subtitle = "Taxa de fertilidade total (filhos por mulher)",
+    x = "Ano",
+    y = "Filhos por mulher",
+    caption = "Fonte: Banco Mundial - WDI"
+  ) +
+  theme_minimal(base_size = 14) +  # Tema minimalista
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold", size = 16),
+    plot.subtitle = element_text(hjust = 0.5, size = 12, face = "italic"),
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Rótulos no eixo X mais legíveis
+    axis.text.y = element_text(size = 12),  # Tamanho do texto do eixo Y
+    plot.caption = element_text(hjust = 1, size = 10),
+    panel.grid.major = element_blank(),  # Remove as linhas de grade
+    panel.grid.minor = element_blank()   # Remove as linhas de grade menores
+  )
+```
