@@ -1,0 +1,78 @@
+---
+title: "Evolução da Taxa Média de Juros"
+format:  
+  html: 
+    toc: true
+    code-fold: true
+execute:
+  freeze: auto
+---
+
+## Introdução
+
+Este relatório apresenta a evolução da **Taxa Média de Juros das Operações de Crédito - Total** (código 20714 do SGS do Banco Central) ao longo dos últimos 10 anos.
+
+
+## Instalar e carregar pacotes
+
+```{r}
+
+
+library(GetBCBData)
+library(tidyverse)
+library(gganimate)
+library(transformr)
+library(lubridate)
+library(gifski)
+
+
+
+
+# Definir ID da série e período de 10 anos atrás até hoje
+my.id <- c(taxa_juros_total = 20714)
+start_date <- Sys.Date() - years(10)
+
+# Baixar dados do Banco Central
+df.juros <- gbcbd_get_series(
+  id = my.id,
+  first.date = start_date,
+  last.date = Sys.Date(),
+  format.data = 'long',
+  use.memoise = TRUE,
+  cache.path = tempdir(),
+  do.parallel = FALSE
+)
+
+# Conferir os primeiros registros
+head(df.juros)
+
+
+
+
+summary_stats <- df.juros %>% 
+  summarise(
+    Min = min(value, na.rm = TRUE),
+    Q1 = quantile(value, 0.25, na.rm = TRUE),
+    Median = median(value, na.rm = TRUE),
+    Mean = mean(value, na.rm = TRUE),
+    Q3 = quantile(value, 0.75, na.rm = TRUE),
+    Max = max(value, na.rm = TRUE)
+  )
+
+summary_stats %>% knitr::kable(digits = 2, caption = "Resumo Estatístico da Taxa Média de Juros (%)")
+
+
+
+
+p <- ggplot(df.juros, aes(x = ref.date, y = value)) +
+  geom_line(color = "darkblue", size = 1.2) +
+  labs(
+    title = "Taxa Média de Juros das Operações de Crédito - Total",
+    subtitle = "Data: {frame_time}",
+    x = "Data", y = "Taxa de Juros (% a.a.)"
+  ) +
+  theme_minimal(base_size = 14) +
+  transition_reveal(ref.date)
+
+p
+```
